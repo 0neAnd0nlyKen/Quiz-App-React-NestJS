@@ -1,0 +1,32 @@
+import { Injectable, ConflictException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
+
+  async findOneByEmail(email: string | undefined): Promise<User | null> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async create(userData: Partial<User>): Promise<User> {
+    const existing = await this.findOneByEmail(userData.email);
+    
+    if (existing) {
+      throw new ConflictException('User with this email already exists');
+    }
+    
+    const newUser = this.usersRepository.create(userData);
+    return this.usersRepository.save(newUser);
+  }
+
+  // Helper for Admin panel later
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find();
+  }
+}
