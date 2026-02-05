@@ -1,15 +1,18 @@
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString, IsBoolean, IsNumber } from 'class-validator';
 
 export class CreateQuestionDto {
-  @IsNotEmpty()
-  @IsString()
-  text: string;
+    @IsNotEmpty()
+    @IsString()
+    text: string;
 
-  @IsNotEmpty()
-  @IsBoolean()
-  correctAnswer: boolean;
+    @IsNotEmpty()
+    @Transform(({ value }) => value === 'true' || value === true || value === 'True')  
+    @IsBoolean()
+    correctAnswer: boolean;
 
-  @IsNotEmpty()
-  @IsNumber()
-  quizId: number;
+    @IsNotEmpty()
+    @Transform(({ value }) => parseInt(value, 10))
+    @IsNumber()
+    quizId: number;
 }

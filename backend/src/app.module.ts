@@ -5,6 +5,13 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { QuizModule } from './modules/quiz/quiz.module';
+import { QuestionsService } from './modules/questions/questions.service';
+import { QuestionsController } from './modules/questions/questions.controller';
+import { QuestionsModule } from './modules/questions/questions.module';
+import { QuizController } from './modules/quiz/quiz.controller';
+import { QuizService } from './modules/quiz/quiz.service';
+import { AnswersModule } from './modules/answers/answers.module';
 
 @Module({
   imports: [
@@ -18,8 +25,19 @@ import { AppController } from './app.controller';
     }),
     AuthModule,
     UsersModule,
+    QuizModule,
+    QuestionsModule,
+    AnswersModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController, 
+    // QuestionsController,
+    // QuizController
+  ],
+  providers: [
+    AppService, 
+    // QuestionsService,
+    // QuizService
+  ],
 })
 export class AppModule {}

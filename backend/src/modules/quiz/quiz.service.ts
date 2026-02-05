@@ -31,4 +31,11 @@ export class QuizService {
     await this.quizzesRepository.delete(id);
   }
 
+  async findWithQuestions(id: number): Promise<Quiz | null> {
+    return this.quizzesRepository.findOne({
+      where: { id },
+      relations: ['questions'],
+    });
+  }
+
 }

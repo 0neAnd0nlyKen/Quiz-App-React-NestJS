@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Answer } from 'src/modules/answers/entities/answer.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -24,4 +25,7 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @OneToMany(() => Answer, answer => answer.user, { cascade: true })
+  answers: Answer[];
 }

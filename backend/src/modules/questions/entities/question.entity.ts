@@ -1,5 +1,6 @@
 import { Quiz } from 'src/modules/quiz/entities/quiz.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Answer } from 'src/modules/answers/entities/answer.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 
 @Entity('questions')
 export class Question {
@@ -16,4 +17,7 @@ export class Question {
   @ManyToOne(() => Quiz, (quiz) => quiz.questions, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'quiz_id' })
   quiz: Quiz;
+
+  @OneToMany(() => Answer, answer => answer.question, { cascade: true })
+  answers: Answer[];
 }

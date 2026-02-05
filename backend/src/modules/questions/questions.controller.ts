@@ -26,8 +26,7 @@ export class QuestionsController {
     async create(@Body() createQuestionDto: CreateQuestionDto) {
         return this.questionsService.create({
             text: createQuestionDto.text,
-            correctAnswer: createQuestionDto.correctAnswer,
-            // Match the entity property name 'quiz'
+            correctAnswer: createQuestionDto.correctAnswer as boolean,
             quiz: { id: createQuestionDto.quizId } as Quiz, 
         });
     }
