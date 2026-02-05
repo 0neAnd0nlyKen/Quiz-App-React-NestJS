@@ -13,6 +13,12 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ unique: true })
+  username: string;
+  
+  @Column({ unique: true })
+  display_name: string;
+
   @Column()
   password: string; // This will be the hashed password
 

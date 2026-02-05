@@ -1,8 +1,8 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
-
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +17,10 @@ export class AuthController {
     // In a real app, use a DTO (Data Transfer Object) for validation
     return this.authService.login(loginDto.email, loginDto.password);
   }
+
   @Post('register')
-  async register(@Body() createUserDto: any) {
+  @UsePipes(new ValidationPipe())
+  async register(@Body() createUserDto: CreateUserDto) {
     // Hash password before saving!
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     return this.usersService.create({
