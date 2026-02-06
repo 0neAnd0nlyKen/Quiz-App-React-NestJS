@@ -12,6 +12,8 @@ import { QuestionsModule } from './modules/questions/questions.module';
 import { QuizController } from './modules/quiz/quiz.controller';
 import { QuizService } from './modules/quiz/quiz.service';
 import { AnswersModule } from './modules/answers/answers.module';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -20,8 +22,8 @@ import { AnswersModule } from './modules/answers/answers.module';
       type: 'postgres',
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      synchronize: false, // Set to false in production, but true now to create tables
-      ssl: { rejectUnauthorized: false }, // Required for many cloud DBs
+      synchronize: false, 
+      ssl: { rejectUnauthorized: false }, 
     }),
     AuthModule,
     UsersModule,
@@ -31,13 +33,13 @@ import { AnswersModule } from './modules/answers/answers.module';
   ],
   controllers: [
     AppController, 
-    // QuestionsController,
-    // QuizController
   ],
   providers: [
-    AppService, 
-    // QuestionsService,
-    // QuizService
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}

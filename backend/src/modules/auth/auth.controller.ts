@@ -3,7 +3,9 @@ import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Public } from './guards/public.decorator';
 
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(
