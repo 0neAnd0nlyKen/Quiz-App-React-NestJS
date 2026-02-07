@@ -12,7 +12,7 @@ export class Quiz {
 
   @OneToMany(() => Question, question => question.quiz, { cascade: true })
   questions: Question[];
-  //one to many userQuizSessions
-  @OneToMany(() => UserQuizSessions, session => session.quiz, { cascade: true })
+
+  @OneToMany(() => UserQuizSessions, userQuizSession => userQuizSession.quiz, { cascade: true })
   userQuizSessions: UserQuizSessions[];
 }

@@ -11,10 +11,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey: configService.get<string>('JWT_SECRET'),
     });
+    this.logger.log(`JWT Strategy initialized successfully`);
   }
 
   // After decoding the token, this data is attached to req.user
   async validate(payload: any) {
-    return { userId: payload.sub, email: payload.email, role: payload.role };
+    this.logger.log(`JWT validated for user: ${payload.email} (sub: ${payload.sub}, role: ${payload.role})`);
+    return {
+      sub: payload.sub,
+      userId: payload.sub,
+      email: payload.email,
+      role: payload.role,
+    };
   }
 }
