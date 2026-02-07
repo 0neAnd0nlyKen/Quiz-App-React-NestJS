@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { JwtStrategy } from './modules/auth/jwt-auth/jwt.strategy';
 import { QuizModule } from './modules/quiz/quiz.module';
 import { QuestionsService } from './modules/questions/questions.service';
 import { QuestionsController } from './modules/questions/questions.controller';
@@ -31,15 +32,21 @@ import { APP_GUARD } from '@nestjs/core';
     QuestionsModule,
     AnswersModule,
   ],
-  controllers: [
-    AppController, 
-  ],
+  // providers: [
+  //   AppService,
+  //   {
+  //     provide: APP_GUARD,
+  //     useClass: JwtAuthGuard,
+  //   },
+  // ],
+  controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    // JwtStrategy
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: JwtAuthGuard,
+    // }
   ],
 })
 export class AppModule {}

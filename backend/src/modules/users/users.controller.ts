@@ -1,12 +1,16 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, BadRequestException, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
-
+//useguard
+    @UseGuards(JwtAuthGuard)
+    // @UseGuards(AuthGuard('jwt'))
     @Get()
     findAll() {
         return this.usersService.findAll();
