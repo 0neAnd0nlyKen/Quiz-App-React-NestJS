@@ -5,6 +5,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { JwtStrategy } from './modules/auth/jwt-auth/jwt.strategy';
+import { JwtAuthGuard } from './modules/auth/jwt-auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -20,6 +22,13 @@ import { AppController } from './app.controller';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // JwtStrategy
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: JwtAuthGuard,
+    // }
+  ],
 })
 export class AppModule {}
