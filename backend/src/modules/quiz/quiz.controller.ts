@@ -1,11 +1,12 @@
 import { Controller, Get, UseGuards, Request, Body, Post, UsePipes, ValidationPipe, Param } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from '../auth/dto/create-quiz.dto';
+import { Public } from '../auth/guards/public.decorator';
 
 @Controller('quiz')
 export class QuizController {
     constructor(private quizService: QuizService) {}
-
+    @Public()
     @Get()
     // @UseGuards(JwtAuthGuard)
     getQuiz(@Request() req) {

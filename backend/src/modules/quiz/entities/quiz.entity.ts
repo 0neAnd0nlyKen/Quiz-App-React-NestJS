@@ -1,4 +1,5 @@
 import { Question } from 'src/modules/questions/entities/question.entity';
+import { UserQuizSessions } from 'src/modules/user-quiz-session/entities/user-quiz-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('quizzes')
@@ -11,4 +12,7 @@ export class Quiz {
 
   @OneToMany(() => Question, question => question.quiz, { cascade: true })
   questions: Question[];
+  //one to many userQuizSessions
+  @OneToMany(() => UserQuizSessions, session => session.quiz, { cascade: true })
+  userQuizSessions: UserQuizSessions[];
 }

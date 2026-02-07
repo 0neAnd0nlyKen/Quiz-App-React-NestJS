@@ -2,14 +2,14 @@ import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, BadReques
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
-import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
 //useguard
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     // @UseGuards(AuthGuard('jwt'))
     @Get()
     findAll() {
