@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport/dist/auth.guard';
+import { Role, Roles } from '../auth/guards/roles/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -12,18 +13,20 @@ export class UsersController {
     // @UseGuards(JwtAuthGuard)
     // @UseGuards(AuthGuard('jwt'))
     @Get()
+    @Roles(Role.Admin)
     findAll() {
         return this.usersService.findAll();
     }
-
+    
     @Get(':id')
     findOne(@Param('id') id: string) {
         const parsed = parseInt(id);
         // if (Number.isNaN(parsed)) throw new BadRequestException('Invalid id');
         return this.usersService.findOne(parsed);
     }
-
+    
     @Post()
+    @Roles(Role.Admin)
     @UsePipes(new ValidationPipe())
     async register(@Body() createUserDto: CreateUserDto) {
         // Hash password before saving!
@@ -33,14 +36,15 @@ export class UsersController {
             password: hashedPassword,
         });
     }
-
+    
     @Post('delete/:id')
+    @Roles(Role.Admin)
     async delete(@Param('id') id: string) {
         const parsed = parseInt(id);
         // if (Number.isNaN(parsed)) throw new BadRequestException('Invalid id');
         return this.usersService.delete(parsed);
     }
-
+    
     @Post('update/:id')
     async update(@Param('id') id: string, @Body() updateData: Partial<CreateUserDto>) {
         const parsed = parseInt(id);

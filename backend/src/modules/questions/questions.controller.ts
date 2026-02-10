@@ -2,8 +2,10 @@ import { Controller, Get, Post, Body, Put, Delete, Param, UsePipes, ValidationPi
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { Quiz } from '../quiz/entities/quiz.entity';
+import { Role, Roles } from '../auth/guards/roles/roles.decorator';
 
 @Controller('questions')
+@Roles(Role.Admin)
 export class QuestionsController {
     constructor(private questionsService: QuestionsService) {}
 

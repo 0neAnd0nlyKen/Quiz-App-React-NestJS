@@ -7,8 +7,6 @@ import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './guards/jwt-auth/jwt.strategy';
-import { ConfigService } from '@nestjs/config/dist/config.service';
-import { ConfigModule } from '@nestjs/config/dist/config.module';
 
 @Module({
   imports: [

@@ -13,10 +13,13 @@ import {
 } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { AnswersService } from './answers.service';
+import { Role, Roles } from '../auth/guards/roles/roles.decorator';
 
 @Controller('answers')
+@Roles(Role.Admin)
 export class AnswersController {
   constructor(private answersService: AnswersService) {}
+
 
   @Get()
   async findAll() {

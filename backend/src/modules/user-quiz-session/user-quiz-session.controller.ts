@@ -8,6 +8,9 @@ import {
 	Req,
 	UsePipes,
 	ValidationPipe,
+	Delete,
+	Put,
+	Query,
 } from '@nestjs/common';
 import { UserQuizSessionsService } from './user-quiz-session.service';
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -19,49 +22,42 @@ import { Roles, Role } from '../auth/guards/roles/roles.decorator';
 export class UserQuizSessionController {
 	constructor(private service: UserQuizSessionsService) {}
 
-	// Admin CRUD (protected by Roles)
-	@Get('admin')
-	// @Roles(Role.Admin)
-	async adminList() {
+	@Get()
+	@Roles(Role.Admin)
+	async findAll() {
 		return this.service.findAll();
 	}
 
-	@Get('admin/:id')
-	// @Roles(Role.Admin)
-	async adminGet(@Param('id') id: string) {
+	@Get(':id')
+	async findOne(@Param('id') id: string) {
 		return this.service.findOne(Number(id));
 	}
 
-	@Patch('admin/:id')
-	// @Roles(Role.Admin)
-	async adminUpdate(@Param('id') id: string, @Body() body: any) {
-		return this.service.update(Number(id), body);
-	}
-
-	@Post('admin')
-	// @Roles(Role.Admin)
-	async adminCreate(@Body() body: any) {
-		return this.service.create(body);
-	}
-
-	@Patch('admin/:id/delete')
-	// @Roles(Role.Admin)
-	async adminDelete(@Param('id') id: string) {
-		await this.service.delete(Number(id));
-		return { deleted: true };
-	}
-
-	// User routes
-	@Get('me')
-	async myAccepted(@Req() req: any) {
-		const userId = req.user?.userId || req.user?.id;
-		return this.service.findForUserNotCompleted(userId);
-	}
-
 	@Post()
-	async acceptQuiz(@Req() req: any, @Body() dto: CreateSessionDto) {
-		const userId = req.user?.userId || req.user?.id;
-		return this.service.createForUser(userId, dto.quizId);
+	async create(@Body() createSessionDto: CreateSessionDto, @Req() req) {
+	}
+
+	@Put(':id')
+	@Roles(Role.Admin)
+	async update(@Param('id') id: string, @Body() updateData: Partial<CreateSessionDto>) {
+	} 
+
+	@Delete(':id')
+	@Roles(Role.Admin)
+	async delete(@Param('id') id: string) {
+		return this.service.delete(Number(id));
+	}
+
+
+	@Get('active/:quizId')//user access
+	async findActive(@Param('quizId') quizId: string, @Req() req) {
+		const userId = req?.user?.id; // id from JWT token
+		return this.service.findActiveSession(userId, Number(quizId));
+	}
+
+	@Patch(':id/start')
+	async start(@Param('id') id: string, @Req() req) {
+		return this.service.startSession(Number(id), req?.user?.id);
 	}
 
 	@Get(':quizId')
