@@ -77,9 +77,10 @@ export class UserQuizSessionController {
 		return this.service.resumeSession(Number(id), userId);
 	}
 
-	@Post(':quizId/finish')
-	async finish(@Req() req: any, @Param('quizId') quizId: string) {
-		const userId = req.user?.userId || req.user?.id;
-		return this.service.finishSession(userId, Number(quizId));
+	@Post(':id/finish')
+	async finish(@Param('id') id: string, @Req() req, @Body() answers: BatchAnswersDto) {
+		return this.service.finishBySessionId(Number(id), req?.user?.id, answers);
 	}
+
+
 }

@@ -140,11 +140,37 @@ export class UserQuizSessionsService {
         return { session, quiz, questions, answers };
     }
 
-        session.score = score;
-        session.isCompleted = true;
+    // Finish by session id: wrapper that uses existing finishSession
+    async finishBySessionId(sessionId: number, userId: number, answers: BatchAnswersDto) {
+        const session = await this.findActiveSession(userId, sessionId);
+        if (!session) throw new NotFoundException('Session not found');
+        if (session.userId !== userId) throw new UnauthorizedException('Unauthorized to finish this session');
+        
+        session.status = sessionStatus.COMPLETED;
+        session.score = await this.calculateScore(session);
 
+        //save answers with this.answersService.createBulk and if some answers failed, handle it gracefully
+        if (answers && answers.answers && answers.answers.length > 0) {
+            await this.answersService.createBulk(answers.answers);
+        }
         return this.userQuizSessionsRepository.save(session);
     }
 
-    //
+    async calculateScore(session: UserQuizSessions): Promise<number> {
+        if (!session) throw new NotFoundException('Session not found');
+        const answers = await this.answersService.findByUser(session.userId);
+        const correctAnswers = answers.filter(a => 
+            a.question && 
+            a.question.quiz && 
+            a.question.quiz.id === session.quizId && 
+            a.userAnswer === a.question.correctAnswer
+        ).length;
+        const score = answers.length > 0 ? (correctAnswers / answers.length * 100) : 0;
+        return score;
+    }
+
+    // Return completed session history for a user
+    async findHistoryForUser(userId: number): Promise<UserQuizSessions[]> {
+        return this.userQuizSessionsRepository.find({ where: { userId }, relations: ['quiz'] });
+    }
 }
