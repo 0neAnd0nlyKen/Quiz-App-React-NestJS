@@ -38,4 +38,16 @@ export class QuizService {
     });
   }
 
+  async search(name: string): Promise<Quiz[]> {
+    return this.quizzesRepository
+      .createQueryBuilder('quiz')
+      .where('quiz.name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+  }
+
+  async getQuestions(quizId: number) {
+    const quiz = await this.findWithQuestions(quizId);
+    return quiz?.questions ?? [];
+  }
+
 }
