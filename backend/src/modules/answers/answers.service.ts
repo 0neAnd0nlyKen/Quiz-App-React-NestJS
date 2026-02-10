@@ -58,6 +58,15 @@ export class AnswersService {
     return this.answersRepository.save(answer);
   }
 
+  async createBulk(createAnswerDtos: CreateAnswerDto[]): Promise<Answer[]> {
+    const savedAnswers: Answer[] = [];
+    for (const createAnswerDto of createAnswerDtos) {
+      const savedAnswer = await this.create(createAnswerDto);
+      savedAnswers.push(savedAnswer);
+    }
+    return savedAnswers;
+  }
+
   async update(id: number, updateData: Partial<CreateAnswerDto>): Promise<Answer> {
     const answer = await this.findOne(id);
     if (!answer) {
@@ -85,5 +94,12 @@ export class AnswersService {
       throw new NotFoundException('Answer not found');
     }
     await this.answersRepository.delete(id);
+  }
+
+  // Calculate score for a session - stub implementation
+  // TODO: implement proper calculation using session -> userId + quizId
+  async calculateScore(sessionId: number): Promise<number> {
+    // Placeholder: real implementation should look up session, answers, and questions
+    return 0;
   }
 }

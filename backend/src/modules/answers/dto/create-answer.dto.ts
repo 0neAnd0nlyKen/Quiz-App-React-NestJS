@@ -1,5 +1,5 @@
-import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsBoolean, IsOptional, IsArray, ValidateNested } from 'class-validator';
 
 export class CreateAnswerDto {
   @IsNotEmpty()
@@ -16,4 +16,11 @@ export class CreateAnswerDto {
   @Transform(({ value }) => value === 'true' || value === true || value === 'True')
   @IsBoolean()
   userAnswer: boolean;
+}
+export class BatchAnswersDto {
+  @IsOptional() // Optional because might submit answers separately
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAnswerDto)
+  answers?: CreateAnswerDto[];
 }

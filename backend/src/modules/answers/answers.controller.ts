@@ -35,10 +35,6 @@ export class AnswersController {
     return answer;
   }
 
-  @Get('user/:userId')
-  async findByUser(@Param('userId') userId: string) {
-    return this.answersService.findByUser(Number(userId));
-  }
 
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
