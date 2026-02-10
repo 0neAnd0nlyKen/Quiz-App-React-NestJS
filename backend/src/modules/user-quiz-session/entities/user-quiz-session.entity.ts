@@ -1,7 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Unique, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Unique, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Quiz } from 'src/modules/quiz/entities/quiz.entity';
 
+export enum sessionStatus {
+  COMPLETED = 'completed',
+  IN_PROGRESS = 'in_progress',
+  PENDING = 'pending',
+}
 
 @Entity('user_quiz_sessions')
 @Unique(['userId', 'quizId'])
@@ -23,12 +28,14 @@ export class UserQuizSessions {
 
     @Column({ type: 'int', name: 'score' })
     score: number;
+    
+    //enum status completed, in_progress, pending
+    @Column({ type: 'varchar', name: 'status', length: 20 })
+    status: sessionStatus;
 
-    @Column({ type: 'boolean', name: 'is_completed' })
-    isCompleted: boolean;
-
-    @CreateDateColumn({ type: 'timestamp with time zone', name: 'inserted_at' })
-    insertedAt: Date;
+    //column named 'updated_at' data type timestamptz
+    @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+    updatedAt: Date;
 
     @ManyToOne(() => User, (user) => user.answers, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
