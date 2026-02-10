@@ -81,8 +81,12 @@ export class UserQuizSessionsService {
         });
     }
 
-    async syncTimer(userId: number, quizId: number, secondsRemaining: number) {
-        const session = await this.findByUserAndQuiz(userId, quizId);
+    async findActiveSession(userId: number, quizId: number): Promise<UserQuizSessions | null> {
+        return this.userQuizSessionsRepository.findOne({
+            where: { userId, quizId, status: sessionStatus.IN_PROGRESS },
+            relations: ['quiz'],
+        });
+    }// userId will never be different from logged in user!
         if (!session) throw new NotFoundException('Session not found');
         session.secondsRemaining = secondsRemaining;
         return this.userQuizSessionsRepository.save(session);
