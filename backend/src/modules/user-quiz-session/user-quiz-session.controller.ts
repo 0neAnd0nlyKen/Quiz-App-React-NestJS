@@ -76,10 +76,10 @@ export class UserQuizSessionController {
 		};
 	}
 
-	@Patch(':quizId/sync')
-	async sync(@Req() req: any, @Param('quizId') quizId: string, @Body() dto: SyncSessionDto) {
-		const userId = req.user?.userId || req.user?.id;
-		return this.service.syncTimer(userId, Number(quizId), dto.secondsRemaining);
+	@Get(':id/resume')
+	async resume(@Param('id') id: string, @Req() req) {
+		const userId = req?.user?.id; // id from JWT token
+		return this.service.resumeSession(Number(id), userId);
 	}
 
 	@Post(':quizId/finish')

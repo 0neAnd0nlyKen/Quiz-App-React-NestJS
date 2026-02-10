@@ -68,13 +68,6 @@ export class UserQuizSessionsService {
         return this.userQuizSessionsRepository.save(session);
     }
 
-    async findForUserNotCompleted(userId: number): Promise<UserQuizSessions[]> {
-        return this.userQuizSessionsRepository.find({
-            where: { userId, isCompleted: false },
-            relations: ['quiz'],
-        });
-    }
-
     async findByUserAndQuiz(userId: number, quizId: number): Promise<UserQuizSessions | null> {
         return this.userQuizSessionsRepository.findOne({
             where: { userId, quizId },
@@ -87,22 +80,41 @@ export class UserQuizSessionsService {
             relations: ['quiz'],
         });
     }// userId will never be different from logged in user!
+
+    async startSession(sessionId: number, userId: number) {
+        const session = await this.findActiveSession(userId, sessionId);
+        if (!session) throw new NotFoundException('Session not found');
+
+        const status = session.status;
+        if (status === sessionStatus.COMPLETED) {
+            throw new Error('Session already completed');
+        }
+        if (status === sessionStatus.IN_PROGRESS) {
+            throw new Error('Session already in progress');
+        }
+        session.status = sessionStatus.IN_PROGRESS;
+        await this.userQuizSessionsRepository.save(session);
+        const quiz = await this.quizzesService.findOne(session.quizId);
+        const questions = await this.quizzesService.getQuestions(session.quizId);
+        return { session, quiz, questions };
+    }
         if (!session) throw new NotFoundException('Session not found');
         session.secondsRemaining = secondsRemaining;
         return this.userQuizSessionsRepository.save(session);
     }
 
-    async finishSession(userId: number, quizId: number) {
-        const session = await this.findByUserAndQuiz(userId, quizId);
+    // Resume: return current timer, questions, and previously saved answers
+    async resumeSession(sessionId: number, userId: number) {
+        const session = await this.findActiveSession(userId, sessionId);
         if (!session) throw new NotFoundException('Session not found');
+        if (session.userId !== userId) throw new UnauthorizedException('Unauthorized to resume this session');
 
-        // Calculate score: count answers where userAnswer == question.correctAnswer for this quiz
-        const answers = await this.answerRepository.find({
-            where: { userId },
-            relations: ['question'],
-        });
+        const quiz = await this.quizzesService.findOne(session.quizId);
+        const questions = await this.quizzesService.getQuestions(session.quizId);
+        const answers = await this.answersService.findByUser(session.userId);
 
-        const score = answers.filter(a => a.question && a.question.quiz && a.question.quiz.id === quizId && a.userAnswer === a.question.correctAnswer).length;
+        return { session, quiz, questions, answers };
+    }
 
         session.score = score;
         session.isCompleted = true;
