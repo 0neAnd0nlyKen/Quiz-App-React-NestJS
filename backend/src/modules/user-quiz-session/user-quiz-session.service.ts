@@ -98,8 +98,32 @@ export class UserQuizSessionsService {
         const questions = await this.quizzesService.getQuestions(session.quizId);
         return { session, quiz, questions };
     }
+    
+    // Sync timer by session id
+    async syncBySessionId(sessionId: number, userId: number, answers: BatchAnswersDto) {
+        const session = await this.findActiveSession(userId, sessionId);
         if (!session) throw new NotFoundException('Session not found');
-        session.secondsRemaining = secondsRemaining;
+
+        if (userId && session.userId !== userId) {
+            throw new UnauthorizedException('Unauthorized to sync this session');
+        }
+
+        const status = session.status;
+        if (status !== sessionStatus.IN_PROGRESS) {
+            throw new Error('Session not in progress');
+        }
+
+        const now = new Date();
+        const lastUpdated = session.updatedAt || now;
+        const elapsedSeconds = Math.floor((now.getTime() - lastUpdated.getTime()) / 1000);
+
+        if (answers && answers.answers && answers.answers.length > 0) {
+            await this.answersService.createBulk(answers.answers);
+        }
+
+        session.secondsRemaining -= elapsedSeconds;
+        session.updatedAt = now;
+        session.status = sessionStatus.PENDING;
         return this.userQuizSessionsRepository.save(session);
     }
 

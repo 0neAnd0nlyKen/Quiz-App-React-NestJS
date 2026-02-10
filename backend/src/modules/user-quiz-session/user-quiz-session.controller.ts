@@ -45,6 +45,7 @@ export class UserQuizSessionController {
 	@Put(':id')
 	@Roles(Role.Admin)
 	async update(@Param('id') id: string, @Body() updateData: Partial<CreateSessionDto>) {
+		return this.service.update(Number(id), updateData);
 	} 
 
 	@Delete(':id')
@@ -65,15 +66,9 @@ export class UserQuizSessionController {
 		return this.service.startSession(Number(id), req?.user?.id);
 	}
 
-	@Get(':quizId')
-	async startOrResume(@Req() req: any, @Param('quizId') quizId: string) {
-		const userId = req.user?.userId || req.user?.id;
-		const session = await this.service.findByUserAndQuiz(userId, Number(quizId));
-		if (!session) return { current_index: 0, seconds_remaining: 0 };
-		return {
-			current_index: session.currentQuestionIndex,
-			seconds_remaining: session.secondsRemaining,
-		};
+	@Patch(':id/sync')
+	async sync(@Param('id') id: string, @Req() req, @Body() answers: BatchAnswersDto) {
+		return this.service.syncBySessionId(Number(id), req?.user?.id, answers);
 	}
 
 	@Get(':id/resume')
