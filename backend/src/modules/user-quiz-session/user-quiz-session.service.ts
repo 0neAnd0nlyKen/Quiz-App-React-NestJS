@@ -1,24 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserQuizSessions } from './entities/user-quiz-session.entity';
+import { sessionStatus, UserQuizSessions } from './entities/user-quiz-session.entity';
 import { Repository } from 'typeorm';
 import { Quiz } from '../quiz/entities/quiz.entity';
 import { Question } from '../questions/entities/question.entity';
 import { Answer } from '../answers/entities/answer.entity';
+import { BatchAnswersDto } from '../answers/dto/create-answer.dto';
+import { AnswersService } from '../answers/answers.service';
+import { QuizService } from '../quiz/quiz.service';
 
 @Injectable()
 export class UserQuizSessionsService {
     constructor(
         @InjectRepository(UserQuizSessions)
         private userQuizSessionsRepository: Repository<UserQuizSessions>,
-        @InjectRepository(Quiz)
-        private quizRepository: Repository<Quiz>,
-        @InjectRepository(Question)
-        private questionRepository: Repository<Question>,
-        @InjectRepository(Answer)
-        private answerRepository: Repository<Answer>,
+        private readonly answersService: AnswersService,
+        private readonly quizzesService: QuizService,
     ){}
-
+    
     async findAll(): Promise<UserQuizSessions[]> {
         return this.userQuizSessionsRepository.find({
             relations: ['user', 'quiz'],
@@ -48,10 +47,7 @@ export class UserQuizSessionsService {
 
     // Create a session for a user when they accept a quiz
     async createForUser(userId: number, quizId: number): Promise<UserQuizSessions> {
-        const quiz = await this.quizRepository.findOne({
-            where: { id: quizId },
-            relations: ['questions'],
-        });
+        const quiz = await this.quizzesService.findOne(quizId);
 
         if (!quiz) {
             throw new NotFoundException('Quiz not found');
@@ -66,7 +62,7 @@ export class UserQuizSessionsService {
             secondsRemaining: seconds,
             currentQuestionIndex: 0,
             score: 0,
-            isCompleted: false,
+            status: sessionStatus.PENDING,
         });
 
         return this.userQuizSessionsRepository.save(session);

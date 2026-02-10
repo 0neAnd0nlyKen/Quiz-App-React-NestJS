@@ -16,6 +16,7 @@ import { UserQuizSessionsService } from './user-quiz-session.service';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { SyncSessionDto } from './dto/sync-session.dto';
 import { Roles, Role } from '../auth/guards/roles/roles.decorator';
+import { BatchAnswersDto, CreateAnswerDto } from '../answers/dto/create-answer.dto';
 
 @Controller('sessions')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
@@ -35,6 +36,10 @@ export class UserQuizSessionController {
 
 	@Post()
 	async create(@Body() createSessionDto: CreateSessionDto, @Req() req) {
+		const userRole = req?.user?.role ?? null;
+		if (userRole === Role.Admin) return this.service.create(createSessionDto);
+		const userId = req?.user?.id ?? null;
+		return this.service.createForUser(userId, createSessionDto.quizId);
 	}
 
 	@Put(':id')
