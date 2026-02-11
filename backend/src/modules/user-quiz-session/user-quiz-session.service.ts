@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sessionStatus, UserQuizSessions } from './entities/user-quiz-session.entity';
 import { Repository } from 'typeorm';
@@ -8,7 +8,7 @@ import { Answer } from '../answers/entities/answer.entity';
 import { BatchAnswersDto } from '../answers/dto/create-answer.dto';
 import { AnswersService } from '../answers/answers.service';
 import { QuizService } from '../quiz/quiz.service';
-
+import { QuestionsService } from '../questions/questions.service';
 @Injectable()
 export class UserQuizSessionsService {
     constructor(
@@ -17,17 +17,18 @@ export class UserQuizSessionsService {
         private readonly answersService: AnswersService,
         private readonly quizzesService: QuizService,
     ){}
+    private readonly logger = new Logger();
     
     async findAll(): Promise<UserQuizSessions[]> {
         return this.userQuizSessionsRepository.find({
-            relations: ['user', 'quiz'],
+            relations: [ 'quiz'],
         });
     }
     
     async findOne(id: number): Promise<UserQuizSessions | null> {
         return this.userQuizSessionsRepository.findOne({
             where: { id },
-            relations: ['user', 'quiz'],
+            relations: [ 'quiz'],
         });
     }
     
@@ -92,13 +93,13 @@ export class UserQuizSessionsService {
 
     async findActiveSession(userId: number, quizId: number): Promise<UserQuizSessions | null> {
         return this.userQuizSessionsRepository.findOne({
-            where: { userId, quizId, status: sessionStatus.IN_PROGRESS },
+            where: { userId, quizId, status: sessionStatus.PENDING },
             relations: ['quiz'],
         });
     }// userId will never be different from logged in user!
 
     async startSession(sessionId: number, userId: number) {
-        const session = await this.findActiveSession(userId, sessionId);
+        const session = await this.findOne(sessionId);
         if (!session) throw new NotFoundException('Session not found');
 
         const status = session.status;
@@ -117,7 +118,7 @@ export class UserQuizSessionsService {
     
     // Sync timer by session id
     async syncBySessionId(sessionId: number, userId: number, answers: BatchAnswersDto) {
-        const session = await this.findActiveSession(userId, sessionId);
+        const session = await this.findOne(sessionId);
         if (!session) throw new NotFoundException('Session not found');
 
         if (userId && session.userId !== userId) {
@@ -136,7 +137,6 @@ export class UserQuizSessionsService {
         if (answers && answers.answers && answers.answers.length > 0) {
             await this.answersService.createBulk(answers.answers);
         }
-
         session.secondsRemaining -= elapsedSeconds;
         session.updatedAt = now;
         session.status = sessionStatus.PENDING;
@@ -145,8 +145,9 @@ export class UserQuizSessionsService {
 
     // Resume: return current timer, questions, and previously saved answers
     async resumeSession(sessionId: number, userId: number) {
-        const session = await this.findActiveSession(userId, sessionId);
+        const session = await this.findOne(sessionId);
         if (!session) throw new NotFoundException('Session not found');
+        // console.log('Resuming session of', session.userId, 'for user', userId);
         if (session.userId !== userId) throw new UnauthorizedException('Unauthorized user for this session!');
 
         const quiz = await this.quizzesService.findOne(session.quizId);
