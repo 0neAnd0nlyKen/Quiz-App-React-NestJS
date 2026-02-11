@@ -3,6 +3,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+export interface JwtPayload {
+  id: number;
+  email: string;
+  role: string;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   // private readonly logger = new Logger(JwtStrategy.name);
@@ -21,13 +27,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // After decoding the token, this data is attached to req.user
-  async validate(payload: any) {
+  async validate(payload: any): Promise<JwtPayload> {
     // this.logger.log(`JWT validated for user: ${payload.email} (sub: ${payload.sub}, role: ${payload.role})`);
     return {
-      sub: payload.sub,
-      userId: payload.sub,
+      id: payload.sub,
       email: payload.email,
       role: payload.role,
     };
+    /**
+     * access via req.user in controllers
+     */
   }
 }

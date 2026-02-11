@@ -11,6 +11,7 @@ import {
 	Delete,
 	Put,
 	Query,
+	Logger,
 } from '@nestjs/common';
 import { UserQuizSessionsService } from './user-quiz-session.service';
 import { CreateSessionDto } from './dto/create-session.dto';
@@ -18,26 +19,33 @@ import { SyncSessionDto } from './dto/sync-session.dto';
 import { Roles, Role } from '../auth/guards/roles/roles.decorator';
 import { BatchAnswersDto, CreateAnswerDto } from '../answers/dto/create-answer.dto';
 import { sessionStatus } from './entities/user-quiz-session.entity';
+import { JwtPayload } from '../auth/guards/jwt-auth/jwt.strategy';
 
 @Controller('sessions')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class UserQuizSessionController {
+	private readonly logger = new Logger(UserQuizSessionController.name);
 	constructor(private service: UserQuizSessionsService) {}
 
 	@Get()
 	async findAll(@Req() req) {
-		if (req?.user?.role === Role.User) 
-			return this.service.findUserSessions(req?.user?.id);
+		const user : JwtPayload = req.user;
+		this.logger.log(`Finding active sessions for user ID: ${user}`);
+		const userId = user.id; // id from JWT token
+		this.logger.log(`Finding active sessions for user ID: ${userId}`);
+		if (user.role === Role.User) 
+			return this.service.findUserSessions(userId);
 		return this.service.findAll();
 	}
 
 	@Get(':id')
 	async findOne(@Param('id') id: string,@Req() req) {
+		const user : JwtPayload = req.user;
 		const session = await this.service.findOne(Number(id));
 		if(!session){
 			throw new Error('Session not found');
 		}
-		if (req?.user?.role === Role.User && session.userId !== req?.user?.id) {
+		if (user.role === Role.User && session.userId !== user.id) {
 			throw new Error('Unauthorized to access this session');
 		}
 		return session;
@@ -45,12 +53,13 @@ export class UserQuizSessionController {
 
 	@Post()
 	async create(@Body() createSessionDto: Partial<CreateSessionDto>, @Req() req) {
+		const user : JwtPayload = req.user;
 		if(!createSessionDto.quizId){
 			throw new Error('quizId is required');
 		}
-		const userRole = req?.user?.role ?? null;	
+		const userRole = user.role ?? null;	
 		if (userRole === Role.Admin) return this.service.create(createSessionDto);
-		const userId = req?.user?.id ?? null;
+		const userId = user.id ?? null;
 		return this.service.createForUser(userId, createSessionDto.quizId);
 	}
 
@@ -80,23 +89,29 @@ export class UserQuizSessionController {
 
 	@Patch(':id/start')
 	async start(@Param('id') id: string, @Req() req) {
-		return this.service.startSession(Number(id), req?.user?.id);
+		const user : JwtPayload = req.user;
+		return this.service.startSession(Number(id), user.id);
 	}
 
-	@Patch(':id/sync')
+	@Post(':id/sync')
 	async sync(@Param('id') id: string, @Req() req, @Body() answers: BatchAnswersDto) {
-		return this.service.syncBySessionId(Number(id), req?.user?.id, answers);
+		const user : JwtPayload = req.user;
+		this.logger.log(`session's id is ${user.id}`);
+		return this.service.syncBySessionId(Number(id), user.id, answers);
 	}
 
 	@Patch(':id/resume')
 	async resume(@Param('id') id: string, @Req() req) {
-		const userId = req?.user?.id; // id from JWT token
+		const user : JwtPayload = req.user;
+		const userId = user.id; // id from JWT token
 		return this.service.resumeSession(Number(id), userId);
 	}
 
 	@Post(':id/finish')
 	async finish(@Param('id') id: string, @Req() req, @Body() answers: BatchAnswersDto) {
-		return this.service.finishBySessionId(Number(id), req?.user?.id, answers);
+		const user : JwtPayload = req.user;
+		this.logger.log(`Finding active sessions for user ID: ${answers}`);		
+		return this.service.finishBySessionId(Number(id), user.id, answers);
 	}
 
 
