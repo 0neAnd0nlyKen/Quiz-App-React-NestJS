@@ -1,25 +1,39 @@
-import { Test, TestingModule } from '@nestjs/testing';
+/**
+ * E2E Tests - Split into separate files for modularity
+ * 
+ * Test files:
+ * - root.e2e-spec.ts - Root route testing
+ * - auth-register.e2e-spec.ts - Auth register endpoint
+ * - auth-login.e2e-spec.ts - Auth login endpoint
+ * - users.e2e-spec.ts - User CRUD operations
+ * - quiz.e2e-spec.ts - Quiz CRUD operations
+ * - questions.e2e-spec.ts - Questions CRUD operations
+ * - answers.e2e-spec.ts - Answers CRUD operations
+ * - sessions.e2e-spec.ts - Sessions management
+ * 
+ * Run all tests with: npm run test:e2e
+ */
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
 import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { setupTestApp, getServer } from './e2e-setup';
 
-describe('AppController (e2e)', () => {
+describe('App Controller (e2e)', () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    app = await setupTestApp();
+  });
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  afterEach(async () => {
+    if (app) {
+      await app.close();
+    }
   });
 
   it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+    const server = getServer(app);
+    return server().get('/').expect(200).expect('Hello World!');
   });
 });
+
+
