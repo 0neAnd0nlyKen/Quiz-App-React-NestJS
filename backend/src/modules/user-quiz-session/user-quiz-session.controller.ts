@@ -26,7 +26,21 @@ import { JwtPayload } from '../auth/guards/jwt-auth/jwt.strategy';
 export class UserQuizSessionController {
 	private readonly logger = new Logger(UserQuizSessionController.name);
 	constructor(private service: UserQuizSessionsService) {}
-
+	@Get('active/')
+	async findAllActive(@Req() req) {
+		const user : JwtPayload = req.user;
+		this.logger.log(`Finding active sessions for user ID: ${user}`);
+		const userId = user.id; // id from JWT token
+		return this.service.findUserSessions(userId, sessionStatus.PENDING);
+	}
+	
+	@Get('active/:quizId')//user access
+	async findActive(@Param('quizId') quizId: string, @Req() req) {
+		const user : JwtPayload = req.user;
+		const userId = user.id; // id from JWT token
+		return this.service.findActiveSession(userId, Number(quizId));
+	}
+	
 	@Get()
 	async findAll(@Req() req) {
 		const user : JwtPayload = req.user;
@@ -75,17 +89,6 @@ export class UserQuizSessionController {
 		return this.service.delete(Number(id));
 	}
 
-	@Get('active/')
-	async findAllActive(@Req() req) {
-		const userId = req?.user?.id; // id from JWT token
-		return this.service.findUserSessions(userId, sessionStatus.IN_PROGRESS);
-	}
-
-	@Get('active/:quizId')//user access
-	async findActive(@Param('quizId') quizId: string, @Req() req) {
-		const userId = req?.user?.id; // id from JWT token
-		return this.service.findActiveSession(userId, Number(quizId));
-	}
 
 	@Patch(':id/start')
 	async start(@Param('id') id: string, @Req() req) {
