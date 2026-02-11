@@ -8,6 +8,7 @@ import { Answer } from '../answers/entities/answer.entity';
 import { BatchAnswersDto } from '../answers/dto/create-answer.dto';
 import { AnswersService } from '../answers/answers.service';
 import { QuizService } from '../quiz/quiz.service';
+import { UsersService } from '../users/users.service';
 import { QuestionsService } from '../questions/questions.service';
 @Injectable()
 export class UserQuizSessionsService {
@@ -16,6 +17,8 @@ export class UserQuizSessionsService {
         private userQuizSessionsRepository: Repository<UserQuizSessions>,
         private readonly answersService: AnswersService,
         private readonly quizzesService: QuizService,
+        private readonly usersService: UsersService,
+        private readonly questionsService: QuestionsService,
     ){}
     private readonly logger = new Logger();
     
@@ -33,6 +36,40 @@ export class UserQuizSessionsService {
     }
     
     async create(userQuizSessionData: Partial<UserQuizSessions>): Promise<UserQuizSessions> {
+        //default values for missing fields
+        if (!userQuizSessionData.userId) {
+            throw new NotFoundException('userId is required');
+        }
+        if (!userQuizSessionData.quizId) {
+            throw new NotFoundException('quizId is required');
+        }
+        const quiz = await this.quizzesService.findOne(userQuizSessionData.quizId);
+        if (!quiz) {
+            throw new NotFoundException('Quiz not found');
+        }
+        const user = await this.usersService.findOne(userQuizSessionData.userId);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+        const session = await this.findByUserAndQuiz(userQuizSessionData.userId, userQuizSessionData.quizId);
+        if (session) {
+            return session;
+        }
+        if (!userQuizSessionData.secondsRemaining) {
+            userQuizSessionData.secondsRemaining = (quiz.questions?.length || 0) * 30;
+        }
+        if (!userQuizSessionData.currentQuestionIndex) {
+            userQuizSessionData.currentQuestionIndex = 0;
+        }
+        if (!userQuizSessionData.score) {
+            userQuizSessionData.score = 0;
+        }
+        if (!userQuizSessionData.status) {
+            userQuizSessionData.status = sessionStatus.PENDING;
+        }
+        if (!userQuizSessionData.updatedAt) {
+            userQuizSessionData.updatedAt = new Date();
+        }
         const userQuizSession = this.userQuizSessionsRepository.create(userQuizSessionData);
         return this.userQuizSessionsRepository.save(userQuizSession);
     }

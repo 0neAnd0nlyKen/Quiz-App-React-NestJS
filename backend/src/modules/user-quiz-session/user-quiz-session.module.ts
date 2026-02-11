@@ -9,6 +9,7 @@ import { Answer } from '../answers/entities/answer.entity';
 import { AnswersModule } from '../answers/answers.module';
 import { QuestionsModule } from '../questions/questions.module';
 import { QuizModule } from '../quiz/quiz.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { QuizModule } from '../quiz/quiz.module';
     QuizModule,
     QuestionsModule,
     AnswersModule,
+    UsersModule,
     
   ],
   controllers: [UserQuizSessionController],
