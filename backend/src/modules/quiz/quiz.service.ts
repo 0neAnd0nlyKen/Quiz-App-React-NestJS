@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz } from './entities/quiz.entity';
 import { Repository } from 'typeorm';
+import { Question } from '../questions/entities/question.entity';
 
 @Injectable()
 export class QuizService {
@@ -45,7 +46,7 @@ export class QuizService {
       .getMany();
   }
 
-  async getQuestions(quizId: number) {
+  async getQuestions(quizId: number): Promise<Question[]> {
     const quiz = await this.findWithQuestions(quizId);
     return quiz?.questions ?? [];
   }

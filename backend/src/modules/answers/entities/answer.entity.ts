@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Unique, JoinColumn } from 'typeorm';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Question } from 'src/modules/questions/entities/question.entity';
+import { User } from '../../users/entities/user.entity';
+import { Question } from '../../questions/entities/question.entity';
 
 @Entity('answers')
 @Unique(['userId', 'questionId'])

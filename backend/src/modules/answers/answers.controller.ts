@@ -46,7 +46,7 @@ export class AnswersController {
   @UsePipes(new ValidationPipe({ transform: true }))
   async update(
     @Param('id') id: string,
-    @Body() updateAnswerDto: CreateAnswerDto,
+    @Body() updateAnswerDto: Partial<CreateAnswerDto>,
   ) {
     return this.answersService.update(Number(id), updateAnswerDto);
   }

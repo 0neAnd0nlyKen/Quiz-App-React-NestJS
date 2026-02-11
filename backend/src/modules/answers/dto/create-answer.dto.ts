@@ -22,5 +22,5 @@ export class BatchAnswersDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateAnswerDto)
-  answers?: CreateAnswerDto[];
+  answers: CreateAnswerDto[];
 }

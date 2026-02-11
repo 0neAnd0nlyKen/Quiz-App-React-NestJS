@@ -15,28 +15,28 @@ export class AnswersService {
 
   async findAll(): Promise<Answer[]> {
     return this.answersRepository.find({
-      relations: ['user', 'question'],
+      // relations: ['user', 'question'],
     });
   }
 
   async findOne(id: number): Promise<Answer | null> {
     return this.answersRepository.findOne({
       where: { id },
-      relations: ['user', 'question'],
+      // relations: ['user', 'question'],
     });
   }
 
   async findByUserAndQuestion(userId: number, questionId: number): Promise<Answer | null> {
     return this.answersRepository.findOne({
       where: { userId: userId, questionId: questionId },
-      relations: ['user', 'question'],
+      // relations: ['user', 'question'],
     });
   }
 
   async findByUser(userId: number): Promise<Answer[]> {
     return this.answersRepository.find({
       where: { userId: userId },
-      relations: ['user', 'question'],
+      // relations: ['user', 'question'],
     });
   }
 
@@ -71,17 +71,6 @@ export class AnswersService {
     const answer = await this.findOne(id);
     if (!answer) {
       throw new NotFoundException('Answer not found');
-    }
-
-    if (updateData.userId || updateData.questionId) {
-      const checkUserId = updateData.userId ?? answer.userId;
-      const checkQuestionId = updateData.questionId ?? answer.questionId;
-
-      const existingAnswer = await this.findByUserAndQuestion(checkUserId, checkQuestionId);
-
-      if (existingAnswer && existingAnswer.id !== id) {
-        throw new ConflictException('User has already answered this question');
-      }
     }
 
     await this.answersRepository.update(id, updateData);

@@ -16,14 +16,15 @@ export class AuthController {
   ) {}
   @HttpCode(HttpStatus.OK)
   @Post('login')
+  //example request body: { "email": "test@example.com", "password": "password123" }
   async login(@Body() loginDto: Record<string, any>) {
     this.logger.debug(`Login request received for email: ${loginDto.email}`);
-    // In a real app, use a DTO (Data Transfer Object) for validation
     return this.authService.login(loginDto.email, loginDto.password);
   }
 
   @Post('register')
-  @UsePipes(new ValidationPipe())
+  //example request body: { "email": "test@example.com", "password": "password123", "display_name": "Test User" }
+  // @UsePipes(new ValidationPipe())
   async register(@Body() createUserDto: CreateUserDto) {
     this.logger.log(`Registration attempt for email: ${createUserDto.email}`);
     // Hash password before saving!
@@ -34,5 +35,6 @@ export class AuthController {
     });
     this.logger.log(`User registered successfully: ${createUserDto.email} (ID: ${result.id})`);
     return result;
+    // return token in response as key "access_token"
   }
 }

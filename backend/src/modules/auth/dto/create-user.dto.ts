@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Role } from '../guards/roles/roles.decorator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -12,4 +13,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   display_name: string;
+  
+  //role column
+  @IsString()
+  role?: Role;
 }
