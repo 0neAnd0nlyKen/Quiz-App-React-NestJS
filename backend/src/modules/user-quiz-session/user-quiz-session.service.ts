@@ -228,17 +228,22 @@ export class UserQuizSessionsService {
         return this.userQuizSessionsRepository.save(session);
     }
 
-    async calculateScore(session: UserQuizSessions): Promise<number> {
-        if (!session) throw new NotFoundException('Session not found');
-        const answers = await this.answersService.findByUser(session.userId);
-        const correctAnswers = answers.filter(a => 
-            a.question && 
-            a.question.quiz && 
-            a.question.quiz.id === session.quizId && 
-            a.userAnswer === a.question.correctAnswer
-        ).length;
-        const score = answers.length > 0 ? (correctAnswers / answers.length * 100) : 0;
-        return score;
+    async calculateScore(answers: BatchAnswersDto): Promise<number> {
+        if (!answers?.answers?.length) return 0;
+        
+        const questionIds = answers.answers.map(a => a.questionId);
+        const questions = await this.questionsService.findByIds(questionIds);
+        
+        const correctAnswers = new Map(
+            questions.map(q => [q.id, q.correctAnswer])
+        );
+
+        const corrects = answers.answers.reduce((count, answer) => {
+            const isCorrect = correctAnswers.get(answer.questionId) === answer.userAnswer;
+            return count + (isCorrect ? 1 : 0);
+        }, 0);
+
+        return (corrects * 100) / answers.answers.length;
     }
 
 }
