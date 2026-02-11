@@ -212,12 +212,14 @@ export class UserQuizSessionsService {
 
     // Finish by session id: wrapper that uses existing finishSession
     async finishBySessionId(sessionId: number, userId: number, answers: BatchAnswersDto) {
-        const session = await this.findActiveSession(userId, sessionId);
+        const session = await this.findOne(sessionId);
         if (!session) throw new NotFoundException('Session not found');
-        if (session.userId !== userId) throw new UnauthorizedException('Unauthorized to finish this session');
+        if (session.userId as number !== userId) throw new UnauthorizedException('Unauthorized to finish this session');
         
         session.status = sessionStatus.COMPLETED;
-        session.score = await this.calculateScore(session);
+        this.logger.log(`let's count score`);        
+        session.score = await this.calculateScore(answers);
+        this.logger.log(`score is ${session.score}`);        
 
         //save answers with this.answersService.createBulk and if some answers failed, handle it gracefully
         if (answers && answers.answers && answers.answers.length > 0) {
