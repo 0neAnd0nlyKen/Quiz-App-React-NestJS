@@ -188,8 +188,24 @@ export class UserQuizSessionsService {
         if (session.userId !== userId) throw new UnauthorizedException('Unauthorized user for this session!');
 
         const quiz = await this.quizzesService.findOne(session.quizId);
-        const questions = await this.quizzesService.getQuestions(session.quizId);
-        const answers = await this.answersService.findByUser(session.userId);
+        let questions: Question[] = await this.quizzesService.getQuestions(session.quizId);
+        questions = questions.map(({ correctAnswer, ...rest }) => rest) as Question[];            
+        const answers = await Promise.all(
+            questions.map(async (question) => {
+                return this.answersService.findByUserAndQuestion(userId, question.id);
+            })
+        );
+        // THE FOLLOWING IS WRONG!!!! IT BREAKS THE SYSTEM!!!
+        // const answers = questions.map(async (question) => {
+        //     const answer = await this.answersService.findByUserAndQuestion(userId, question.id);
+        //     return answer;
+        // });    
+        // // ⚠️ answers is an array of Promises that NEVER get awaited/resolved!
+        // resumeSession returns an object containing unresolved Promises in the answers array
+        // The test receives this response and completes
+        // BUT those database queries are still running in the background. They keep database connections open/active
+        // When the next test (finish) runs, it tries to use the database but connections are in a bad state or terminated
+        // QueryFailedError: Connection terminated appears
 
         return { session, quiz, questions, answers };
     }
