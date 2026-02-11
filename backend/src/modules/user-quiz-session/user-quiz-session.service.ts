@@ -53,6 +53,11 @@ export class UserQuizSessionsService {
             throw new NotFoundException('Quiz not found');
         }
 
+        const existingSession = await this.findByUserAndQuiz(userId, quizId);
+        if (existingSession) {
+            return existingSession;
+        }
+
         // Default: 30s per question
         const seconds = (quiz.questions?.length || 0) * 30;
 
@@ -71,6 +76,17 @@ export class UserQuizSessionsService {
     async findByUserAndQuiz(userId: number, quizId: number): Promise<UserQuizSessions | null> {
         return this.userQuizSessionsRepository.findOne({
             where: { userId, quizId },
+        });
+    }
+
+    async findUserSessions(userId: number, status?: sessionStatus): Promise<UserQuizSessions[]> {
+        const whereClause: any = { userId };
+        if (status) {
+            whereClause.status = status;
+        }
+        return this.userQuizSessionsRepository.find({
+            where: whereClause,
+            relations: ['quiz'],
         });
     }
 
@@ -131,7 +147,7 @@ export class UserQuizSessionsService {
     async resumeSession(sessionId: number, userId: number) {
         const session = await this.findActiveSession(userId, sessionId);
         if (!session) throw new NotFoundException('Session not found');
-        if (session.userId !== userId) throw new UnauthorizedException('Unauthorized to resume this session');
+        if (session.userId !== userId) throw new UnauthorizedException('Unauthorized user for this session!');
 
         const quiz = await this.quizzesService.findOne(session.quizId);
         const questions = await this.quizzesService.getQuestions(session.quizId);
@@ -169,8 +185,4 @@ export class UserQuizSessionsService {
         return score;
     }
 
-    // Return completed session history for a user
-    async findHistoryForUser(userId: number): Promise<UserQuizSessions[]> {
-        return this.userQuizSessionsRepository.find({ where: { userId }, relations: ['quiz'] });
-    }
 }

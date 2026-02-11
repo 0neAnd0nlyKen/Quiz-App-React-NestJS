@@ -14,6 +14,20 @@ export class QuizController {
         if (name) return this.quizService.search(name);
         return this.quizService.findAll();
     }
+    
+    @Public()
+    @Get(':id')
+    getQuizById(@Request() req, @Param('id') id: number) {
+        return this.quizService.findOne(id);
+    }
+
+
+    @Get(':id/questions')
+    @Roles(Role.Admin)
+    getQuizQuestions(@Request() req, @Param('id') id: number) {
+        return this.quizService.getQuestions(id);
+    }
+
 
     @Roles(Role.Admin)
     @Post()

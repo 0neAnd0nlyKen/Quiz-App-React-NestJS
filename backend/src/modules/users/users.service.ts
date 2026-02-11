@@ -2,6 +2,7 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { Role } from '../auth/guards/roles/roles.decorator';
 
 @Injectable()
 export class UsersService {
@@ -14,13 +15,15 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  async create(userData: Partial<User>): Promise<User> {
+  async create(userData: Partial<User>, userRole?: Role): Promise<User> {
     const existing = await this.findOneByEmail(userData.email);
     
     if (existing) {
       throw new ConflictException('User with this email already exists');
     }
     
+    userData.role = userRole === Role.Admin ? Role.User : userData.role || Role.User;
+
     const newUser = this.usersRepository.create(userData);
     return this.usersRepository.save(newUser);
   }

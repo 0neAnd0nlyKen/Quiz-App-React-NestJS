@@ -5,7 +5,7 @@ import { Role, ROLES_KEY } from './roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  private readonly logger = new Logger(RolesGuard.name);
+  // private readonly logger = new Logger(RolesGuard.name);
 
   constructor(private reflector: Reflector) {}
 
@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
     ]);
 
     if (!requiredRoles) {
-      this.logger.debug('No roles required for this route');
+      // this.logger.debug('No roles required for this route');
       return true; 
     }
 
@@ -27,11 +27,11 @@ export class RolesGuard implements CanActivate {
     const hasRequiredRole = requiredRoles.some((role) => user.role?.includes(role));
 
     if (!hasRequiredRole) {
-      this.logger.warn(`Role authorization failed: User ${user.email} (ID: ${userId}) with role [${user.role}] cannot access route requiring roles [${requiredRoles.join(', ')}]`);
+      // this.logger.warn(`Role authorization failed: User ${user.email} (ID: ${userId}) with role [${user.role}] cannot access route requiring roles [${requiredRoles.join(', ')}]`);
       throw new ForbiddenException('Insufficient permissions');
     }
 
-    this.logger.log(`Role authorization successful: User ${user.email} (ID: ${userId}) with role [${user.role}] granted access`);
+    // this.logger.log(`Role authorization successful: User ${user.email} (ID: ${userId}) with role [${user.role}] granted access`);
     return true;
   }
 

@@ -6,10 +6,17 @@ import { UserQuizSessionsService } from './user-quiz-session.service';
 import { Quiz } from '../quiz/entities/quiz.entity';
 import { Question } from '../questions/entities/question.entity';
 import { Answer } from '../answers/entities/answer.entity';
+import { AnswersModule } from '../answers/answers.module';
+import { QuestionsModule } from '../questions/questions.module';
+import { QuizModule } from '../quiz/quiz.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserQuizSessions, Quiz, Question, Answer])
+    TypeOrmModule.forFeature([UserQuizSessions, Quiz, Question, Answer]),
+    QuizModule,
+    QuestionsModule,
+    AnswersModule,
+    
   ],
   controllers: [UserQuizSessionController],
   providers: [UserQuizSessionsService],

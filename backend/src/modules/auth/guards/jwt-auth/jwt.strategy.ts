@@ -5,24 +5,24 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly logger = new Logger(JwtStrategy.name);
+  // private readonly logger = new Logger(JwtStrategy.name);
 
   constructor(private configService: ConfigService) {
     const secret = configService.get<string>('JWT_SECRET');
-    console.log(`JWT Strategy constructor called`);
-    console.log(`JWT_SECRET env var: ${process.env.JWT_SECRET ? 'SET' : 'NOT SET'}`);
-    console.log(`Using secret: ${secret?.substring(0, 10)}...`);
+    // console.log(`JWT Strategy constructor called`);
+    // console.log(`JWT_SECRET env var: ${process.env.JWT_SECRET ? 'SET' : 'NOT SET'}`);
+    // console.log(`Using secret: ${secret?.substring(0, 10)}...`);
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: secret,
     });
-    this.logger.log(`JWT Strategy initialized successfully`);
+    // this.logger.log(`JWT Strategy initialized successfully`);
   }
 
   // After decoding the token, this data is attached to req.user
   async validate(payload: any) {
-    this.logger.log(`JWT validated for user: ${payload.email} (sub: ${payload.sub}, role: ${payload.role})`);
+    // this.logger.log(`JWT validated for user: ${payload.email} (sub: ${payload.sub}, role: ${payload.role})`);
     return {
       sub: payload.sub,
       userId: payload.sub,

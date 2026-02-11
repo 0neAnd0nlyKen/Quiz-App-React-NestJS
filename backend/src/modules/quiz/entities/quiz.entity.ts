@@ -1,5 +1,5 @@
-import { Question } from 'src/modules/questions/entities/question.entity';
-import { UserQuizSessions } from 'src/modules/user-quiz-session/entities/user-quiz-session.entity';
+import { Question } from '../../questions/entities/question.entity';
+import { UserQuizSessions } from '../../user-quiz-session/entities/user-quiz-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('quizzes')

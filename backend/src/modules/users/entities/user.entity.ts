@@ -1,10 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Answer } from 'src/modules/answers/entities/answer.entity';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
-}
+import { Answer } from '../../answers/entities/answer.entity';
+import { Role } from '../../auth/guards/roles/roles.decorator';
 
 @Entity('users')
 export class User {
@@ -23,8 +19,8 @@ export class User {
   @Column()
   password: string; // This will be the hashed password
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
-  role: UserRole;
+  @Column({ type: 'enum', enum: Role, default: Role.User })
+  role: Role;
 
   @OneToMany(() => Answer, answer => answer.user, { cascade: true })
   answers: Answer[];

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Unique, JoinColumn, UpdateDateColumn } from 'typeorm';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Quiz } from 'src/modules/quiz/entities/quiz.entity';
+import { User } from '../../users/entities/user.entity';
+import { Quiz } from '../../quiz/entities/quiz.entity';
 
 export enum sessionStatus {
   COMPLETED = 'completed',
