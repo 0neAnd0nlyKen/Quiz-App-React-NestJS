@@ -4,7 +4,7 @@ import { setupTestApp, getServer } from './e2e-setup';
 
 describe('Auth - Login (e2e)', () => {
   let app: INestApplication<App>;
-
+  let now = Date.now();
   beforeEach(async () => {
     app = await setupTestApp();
   });
@@ -22,7 +22,7 @@ describe('Auth - Login (e2e)', () => {
     await server()
       .post('/auth/register')
       .send({
-        email: 'testlogin@example.com',
+        email: `testlogin${now}@example.com`,
         password: 'password123',
         display_name: 'Test Login User',
       });
@@ -31,7 +31,7 @@ describe('Auth - Login (e2e)', () => {
     const response = await server()
       .post('/auth/login')
       .send({
-        email: 'testlogin@example.com',
+        email: `testlogin${now}@example.com`,
         password: 'password123',
       });
 

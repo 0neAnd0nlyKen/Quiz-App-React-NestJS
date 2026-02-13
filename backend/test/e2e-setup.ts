@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -28,8 +29,8 @@ export async function loginAdminUser(app: INestApplication<App>): Promise<string
   const response = await server()
     .post('/auth/login')
     .send({
-      email: `kendrickraphael@gmail.com`,
-      password: 'password',
+      email: `test12345@email.com`,
+      password: 'password12345',
     });
 
   // Manually set role to admin in database or assume first user is admin
@@ -47,7 +48,7 @@ export async function loginRegularUser(app: INestApplication<App>): Promise<stri
     .post('/auth/login')
     .send({
         email: 'testregister@example.com',
-        password: 'password123',
+        password: 'password',
     });
 
   return response.body?.access_token || '';
