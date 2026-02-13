@@ -5,6 +5,23 @@ import { AuthService } from '../auth/auth.service';
 
 @Controller('admin')
 export class AdminController {
+
+    constructor(
+        private authService: AuthService,
+    ) {}
+
+    @Get('dashboard')
+    @Roles(Role.Admin)
+    @Render('admin/quiz') // No need for .hbs extension
+    async getDashboard(@Query() query) {
+        return { 
+            adminName: 'Kendrick', 
+            date: new Date().toLocaleDateString(),
+            error_msg: query.error_msg,
+            success_msg: query.success_msg,
+        };
+    }    
+    
     @Get('login')
     @Public()
     @Render('admin/login') // No need for .hbs extension
@@ -24,4 +41,10 @@ export class AdminController {
             return res.render('admin/login', { error_msg: 'Invalid email or password' });
         }
     }   
+    
+    @Get('signout')
+    async signout(@Res() res:any){
+        res.clearCookie('access_token');
+        return res.redirect('/admin/login');        
+    }
 }

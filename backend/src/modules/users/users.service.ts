@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Role } from '../auth/guards/roles/roles.decorator';
+import bcrypt from 'node_modules/bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,11 @@ export class UsersService {
   }
   
   async update(id: number, updateData: Partial<User>): Promise<User> {
+    if (updateData.password && updateData.password.trim() !== '') {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    } else {
+      delete updateData.password;
+    }    
     await this.usersRepository.update(id, updateData);
     return this.findOne(id) as Promise<User>;
   }

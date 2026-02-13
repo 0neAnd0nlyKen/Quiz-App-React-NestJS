@@ -21,6 +21,9 @@ import { JwtService } from '@nestjs/jwt';
     ],
     controllers: [
         AdminController,
+        quizAdminController,
+        UsersAdminController,
+        SessionsAdminController
     ],
     providers: [
         AuthService,

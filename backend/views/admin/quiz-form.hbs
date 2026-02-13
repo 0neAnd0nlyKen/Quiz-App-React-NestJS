@@ -1,0 +1,24 @@
+<h2>{{#if quiz}} Edit Quiz: {{quiz.name}} {{else}} Create New Quiz {{/if}}</h2>
+
+<form action="/admin/quizzes{{#if quiz}}/{{quiz.id}}/edit{{else}}/create{{/if}}" method="POST">
+    
+    <div class="mb-3">
+        <label class="form-label">Quiz Name</label>
+        <input type="text" name="name" class="form-control" 
+               value="{{quiz.name}}" placeholder="New Quiz Name" required>
+    </div>
+
+    {{#if quiz}}
+    <div class="mb-3">
+        <label class="form-label">Quiz ID (Internal)</label>
+        <input type="text" class="form-control" value="{{quiz.id}}" disabled>
+    </div>
+    {{/if}}
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            {{#if quiz}} Update Quiz {{else}} Save Quiz {{/if}}
+        </button>
+        <a href="/admin/quizzes" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

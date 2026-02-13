@@ -1,0 +1,12 @@
+<h4>Live Answer Log</h4>
+<div class="list-group">
+    {{#each answers}}
+    <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h6 class="mb-1">{{this.user.username}} answered Question #{{this.questionId}}</h6>
+            <small>{{this.insertedAt}}</small>
+        </div>
+        <p class="mb-1">Selected: <strong>{{this.userAnswer}}</strong></p>
+    </li>
+    {{/each}}
+</div>

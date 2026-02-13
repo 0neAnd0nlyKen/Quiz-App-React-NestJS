@@ -1,0 +1,50 @@
+<h2>{{#if session}} Edit Session: {{session.name}} {{else}} Create New Session {{/if}}</h2>
+
+<form action="/admin/sessions{{#if session}}/{{session.id}}/edit{{else}}/create{{/if}}" method="POST">
+
+    <div class="mb-3">
+        <label class="form-label">Select User</label>
+        <select name="userId" class="form-select" required>
+            {{#each users}}
+                <option value="{{this.id}}" >{{this.name}}</option>
+            {{/each}}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Select Quiz</label>
+        <select name="quizId" class="form-select" required>
+            {{#each quizzes}}
+                <option value="{{this.id}}" >{{this.name}}</option>
+            {{/each}}
+        </select>
+
+    <div class="mb-3">
+        <label class="form-label">Remaining Seconds</label>
+        <input name="secondsRemaining" type="number" class="form-control" value="{{quiz.secondsRemaining}}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Question Index</label>
+        <input name="currentQuestionIndex" type="number" class="form-control" value="{{quiz.currentQuestionIndex}}">
+
+    <div class="mb-3">
+        <label class="form-label">Score</label>
+        <input name="score" type="number" class="form-control" value="{{quiz.score}}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Select Status</label>
+        <select name="status" class="form-select" required>
+            <option value="pending" >Pending</option>
+            <option value="completed" >Completed</option>
+            <option value="in_progress" >In Progress</option>
+        </select>
+        
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary">
+            {{#if session}} Update Session {{else}} Save Session {{/if}}
+        </button>
+        <a href="/admin/sessions" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>

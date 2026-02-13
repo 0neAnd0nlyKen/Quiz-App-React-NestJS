@@ -1,0 +1,52 @@
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">{{#if user}}Edit User: {{user.username}}{{else}}Create New User{{/if}}</h4>
+    </div>
+    <div class="card-body">
+        <form action="{{#if user}}/admin/users/{{user.id}}/edit{{else}}/admin/users/create{{/if}}" method="POST">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" value="{{user.username}}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" name="display_name" class="form-control" value="{{user.display_name}}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" value="{{user.email}}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" 
+                       {{#unless user}}required{{/unless}} 
+                       placeholder="{{#if user}}Leave blank to keep current password{{else}}Enter secure password{{/if}}">
+                {{#if user}}
+                    <div class="form-text text-muted">For security, passwords are encrypted and never shown back to you.</div>
+                {{/if}}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">User Role</label>
+                <select name="role" class="form-select">
+                    <option value="user" >Standard User</option>
+                    <option value="admin" >Administrator</option>
+                </select>
+            </div>
+
+            <hr>
+            <div class="d-flex justify-content-end">
+                <a href="/admin/users" class="btn btn-light me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    {{#if user}}Save Changes{{else}}Create User{{/if}}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
