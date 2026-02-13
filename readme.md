@@ -71,6 +71,7 @@ Tool: C4 Model, PlantUML, atau Diagrams.net
 ┌─────────────────────▼───────────────────────────────┐
 │                   Database Layer                     │
 │                  (PostgreSQL)
+|                       (Supabase)                        │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -507,8 +508,7 @@ CREATE TABLE answers (
 
 **🎨 ERD Visual:**
 ```
-CUSTOMIZE ERD.JPG
-
+[ERD](public\Quiz-App-Diagram.jpg)
 ```
 
 ---
@@ -549,10 +549,6 @@ The application uses JWT (JSON Web Tokens) for stateless authentication:
 - **RolesGuard:** Checks user role for admin-only endpoints
 - **Public Decorator:** Marks endpoints that don't require authentication
 
-```mermaid
-CUSTOMIZE
-
-```
 
 ---
 
@@ -564,17 +560,6 @@ CUSTOMIZE
 ```bash
 cd backend
 npm run test
-```
-
-**E2E Tests:**
-```bash
-cd backend
-npm run test:e2e
-```
-
-**Test Coverage:**
-```bash
-npm run test:cov
 ```
 
 ### Test Structure
@@ -591,7 +576,7 @@ test/
 ```
 HASIL TESTING LULUS SEBAGAI BERIKUT
 ```
-CUSTOM
+[e2e tests](public\e2e-tests.png)
 ```
 
 
@@ -600,40 +585,39 @@ CUSTOM
 Dilakukan end-to-end testing menggunakan Postman sebagai berikut!
 
 ```
-CUSTOM
+[postman]public\postman.png
 ```
 
-Koleksi Postman bisa didapatkan pada berikut!
+Koleksi Postman bisa didapatkan pada [berikut](\backend\test\Quiz Sessions API.postman_collection.json)!
 
 ```
-CUSTOM LINK TO FILE
+backend\test\Quiz Sessions API.postman_collection.json
 ```
 
 
 ### Admin Panel 
 
 1. **Login Admin Panel**
-```bash
-git clone https://github.com/yourusername/quiz-app.git
-cd quiz-app
+```
+![login admin panel!](public\login.png)
 ```
 
 2. **Create Quiz**
 ```
-CUSTOM
+![create quizzes](public\create.png)
 ```
 
 3. **Read Quiz**
 ```
-CUSTOM
+![show quiz](public\all-quizzess.png)
 ```
 4. **Edit Quiz**
 ```
-CUSTOM
+![edit](public\edit.png)
 ```
-5. **Delete Quiz**
+5. **edit success**
 ```
-CUSTOM
+![edit success!](public\edit-success.png)
 ```
 
 ### Test Coverage Areas
@@ -667,7 +651,7 @@ Tool: AWS Architecture Diagram, Cloud Architecture Diagram
 ```
 
 - **Backend:**  Railway
-Railway deployment: [HERE](/backend/test/Quiz Sessions API.postman_collection.json)
+Railway deployment: [HERE](https://quiz-app-react-nestjs-production.up.railway.app/)
 - **Frontend:** Vercel
 - **Database:** Supabase
 
