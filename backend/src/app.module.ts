@@ -14,6 +14,7 @@ import { UserQuizSessionsService } from './modules/user-quiz-session/user-quiz-s
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './modules/auth/guards/roles/roles.guard';
 import { UserQuizSessionModule } from './modules/user-quiz-session/user-quiz-session.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -31,9 +32,10 @@ import { UserQuizSessionModule } from './modules/user-quiz-session/user-quiz-ses
     QuestionsModule,
     AnswersModule,
     UserQuizSessionModule,
+    AdminModule,
   ],
   controllers: [
-    AppController, 
+    AppController,
   ],
   providers: [
     AppService,
