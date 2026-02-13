@@ -32,36 +32,6 @@
 
 Q KEN A adalah aplikasi kuis interaktif yang memungkinkan admin membuat kuis, pertanyaan, dan mengelola sesi kuis, sementara user dapat mengikuti kuis dengan sistem tracking waktu dan scoring otomatis.
 
-**🎨 DIAGRAM: System Overview Diagram**
-┌─────────────────────────────────────────────────────┐
-│                  Presentation Layer                  │
-│              (React + TypeScript)                    │
-│  - Components  - Hooks  - State Management          │
-└─────────────────────┬───────────────────────────────┘
-                      │ HTTP/REST
-┌─────────────────────▼───────────────────────────────┐
-│                  API Gateway Layer                   │
-│              (NestJS Controllers)                    │
-│  - Auth  - Quiz  - Questions  - Sessions  - Users   │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│               Business Logic Layer                   │
-│              (NestJS Services)                       │
-│  - Business Rules  - Validation  - Processing       │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│                Data Access Layer                     │
-│              (TypeORM Repositories)                  │
-│  - Entities  - Repositories  - Migrations           │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│                   Database Layer                     │
-│                  (PostgreSQL)                        │
-└─────────────────────────────────────────────────────┘
-
 
 ## 🏗️ Architecture
 
@@ -100,7 +70,7 @@ Tool: C4 Model, PlantUML, atau Diagrams.net
                       │
 ┌─────────────────────▼───────────────────────────────┐
 │                   Database Layer                     │
-│                  (PostgreSQL)                        │
+│                  (PostgreSQL)
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -537,28 +507,8 @@ CREATE TABLE answers (
 
 **🎨 ERD Visual:**
 ```
-┌─────────────┐       ┌──────────────────┐       ┌─────────────┐
-│    users    │       │ user_quiz_sessions│      │    quiz     │
-├─────────────┤       ├──────────────────┤       ├─────────────┤
-│ id (PK)     │──────<│ user_id (FK)     │>──────│ id (PK)     │
-│ email       │       │ quiz_id (FK)     │       │ name        │
-│ password    │       │ status           │       │ description │
-│ role        │       │ score            │       └─────────────┘
-└─────────────┘       └──────────────────┘              │
-                              │                         │
-                              │                         V
-                              │                  ┌─────────────┐
-                              │                  │  questions  │
-                              │                  ├─────────────┤
-                              V                  │ id (PK)     │
-                       ┌─────────────┐           │ text        │
-                       │   answers   │<─────────│ quiz_id(FK) │
-                       ├─────────────┤           │ correct_ans │
-                       │ id (PK)     │           └─────────────┘
-                       │ user_id(FK) │
-                       │ question_id │
-                       │ user_answer │
-                       └─────────────┘
+CUSTOMIZE ERD.JPG
+
 ```
 
 ---
@@ -567,8 +517,7 @@ CREATE TABLE answers (
 
 **🎨 DIAGRAM: Authentication Flow Diagram**
 ```
-Letakkan di sini: Detailed authentication and authorization flow
-Tool: Mermaid Sequence Diagram
+
 ```
 
 ### JWT Implementation
@@ -601,16 +550,8 @@ The application uses JWT (JSON Web Tokens) for stateless authentication:
 - **Public Decorator:** Marks endpoints that don't require authentication
 
 ```mermaid
-flowchart TD
-    A[Request] --> B{Has JWT Token?}
-    B -->|No| C[Return 401 Unauthorized]
-    B -->|Yes| D{Valid Token?}
-    D -->|No| C
-    D -->|Yes| E{Check Role}
-    E -->|Admin Required| F{Is Admin?}
-    E -->|User Access| G[Allow Access]
-    F -->|No| H[Return 403 Forbidden]
-    F -->|Yes| G
+CUSTOMIZE
+
 ```
 
 ---
@@ -648,6 +589,52 @@ test/
 ├── users.e2e-spec.ts              # User management tests
 └── e2e-setup.ts                   # Test configuration
 ```
+HASIL TESTING LULUS SEBAGAI BERIKUT
+```
+CUSTOM
+```
+
+
+### Postman
+
+Dilakukan end-to-end testing menggunakan Postman sebagai berikut!
+
+```
+CUSTOM
+```
+
+Koleksi Postman bisa didapatkan pada berikut!
+
+```
+CUSTOM LINK TO FILE
+```
+
+
+### Admin Panel 
+
+1. **Login Admin Panel**
+```bash
+git clone https://github.com/yourusername/quiz-app.git
+cd quiz-app
+```
+
+2. **Create Quiz**
+```
+CUSTOM
+```
+
+3. **Read Quiz**
+```
+CUSTOM
+```
+4. **Edit Quiz**
+```
+CUSTOM
+```
+5. **Delete Quiz**
+```
+CUSTOM
+```
 
 ### Test Coverage Areas
 
@@ -677,91 +664,12 @@ Tool: AWS Architecture Diagram, Cloud Architecture Diagram
 
 ### Production Deployment
 
-#### Using Docker
-
-1. **Build Docker images:**
-```bash
-# Backend
-cd backend
-docker build -t quiz-app-backend .
-
-# Frontend
-cd frontend
-docker build -t quiz-app-frontend .
 ```
 
-2. **Run with Docker Compose:**
-```yaml
-version: '3.8'
-services:
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_DB: quiz_app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
-
-  backend:
-    image: quiz-app-backend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    environment:
-      DATABASE_HOST: db
-
-  frontend:
-    image: quiz-app-frontend
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-```
-
-```bash
-docker-compose up -d
-```
-
-#### Manual Deployment
-
-**Backend (Node.js server):**
-```bash
-cd backend
-npm ci --production
-npm run build
-pm2 start dist/main.js --name quiz-api
-```
-
-**Frontend (Static hosting):**
-```bash
-cd frontend
-npm ci
-npm run build
-# Deploy 'dist' folder to Netlify, Vercel, or S3
-```
-
-### Environment-Specific Configurations
-
-- Development: `.env.development`
-- Staging: `.env.staging`
-- Production: `.env.production`
-
-### Recommended Hosting Options
-
-- **Backend:** Heroku, Railway, DigitalOcean, AWS EC2
-- **Frontend:** Vercel, Netlify, AWS S3 + CloudFront
-- **Database:** AWS RDS, DigitalOcean Managed Database
+- **Backend:**  Railway
+Railway deployment: [HERE](/backend/test/Quiz Sessions API.postman_collection.json)
+- **Frontend:** Vercel
+- **Database:** Supabase
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
