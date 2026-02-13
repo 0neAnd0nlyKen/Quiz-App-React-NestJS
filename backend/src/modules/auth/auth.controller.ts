@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe, Logger, Res } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe, Logger, Res, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -30,10 +30,10 @@ export class AuthController {
       maxAge: 3600000, // 1 hour in milliseconds
     });
 
-    return res.redirect('/admin/dashboard'); 
+    return result; 
     
   } catch (err) {
-    return res.render('admin/login', { error: 'Invalid Credentials' });
+    throw new UnauthorizedException('Invalid credentials');
   }
   }  
 

@@ -8,8 +8,7 @@ import { UserQuizSessionModule } from '../user-quiz-session/user-quiz-session.mo
 import { quizAdminController } from './admin-quizzes.controller';
 import { UsersAdminController } from './admin-users.controller';
 import { SessionsAdminController } from './admin-sessions.controller';
-import { AuthService } from '../auth/auth.service';
-import { JwtService } from '@nestjs/jwt';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
@@ -18,6 +17,7 @@ import { JwtService } from '@nestjs/jwt';
         QuestionsModule,
         AnswersModule,
         UserQuizSessionModule,
+        AuthModule,
     ],
     controllers: [
         AdminController,
@@ -25,9 +25,6 @@ import { JwtService } from '@nestjs/jwt';
         UsersAdminController,
         SessionsAdminController
     ],
-    providers: [
-        AuthService,
-        JwtService,
-    ],
+    providers: [],
 })
 export class AdminModule {}
