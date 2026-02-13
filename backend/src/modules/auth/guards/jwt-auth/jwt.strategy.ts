@@ -2,7 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
+import { Request } from 'express';
 export interface JwtPayload {
   id: number;
   email: string;
@@ -11,19 +11,19 @@ export interface JwtPayload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  // private readonly logger = new Logger(JwtStrategy.name);
 
   constructor(private configService: ConfigService) {
     const secret = configService.get<string>('JWT_SECRET');
-    // console.log(`JWT Strategy constructor called`);
-    // console.log(`JWT_SECRET env var: ${process.env.JWT_SECRET ? 'SET' : 'NOT SET'}`);
-    // console.log(`Using secret: ${secret?.substring(0, 10)}...`);
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: Request) => {
+          return request?.cookies?.access_token || null;
+        },
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: secret,
     });
-    // this.logger.log(`JWT Strategy initialized successfully`);
   }
 
   // After decoding the token, this data is attached to req.user

@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core/services/reflector.service';
 import { Observable } from 'rxjs';
 import { Role, ROLES_KEY } from './roles.decorator';
@@ -23,8 +23,11 @@ export class RolesGuard implements CanActivate {
     }
 
     const { user } = context.switchToHttp().getRequest();
+    if (!user) {
+      throw new UnauthorizedException('Authentication required');
+    }
     const userId = user?.sub || user?.userId;
-    const hasRequiredRole = requiredRoles.some((role) => user.role?.includes(role));
+    const hasRequiredRole = requiredRoles.includes(user.role);
 
     if (!hasRequiredRole) {
       // this.logger.warn(`Role authorization failed: User ${user.email} (ID: ${userId}) with role [${user.role}] cannot access route requiring roles [${requiredRoles.join(', ')}]`);

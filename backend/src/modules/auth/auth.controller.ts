@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe, Logger } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UsePipes, ValidationPipe, Logger, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -16,11 +16,26 @@ export class AuthController {
   ) {}
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  //example request body: { "email": "test@example.com", "password": "password123" }
-  async login(@Body() loginDto: Record<string, any>) {
-    this.logger.debug(`Login request received for email: ${loginDto.email}`);
-    return this.authService.login(loginDto.email, loginDto.password);
+  async login(
+    @Body() loginDto: Record<string, any>,
+    @Res({ passthrough: true }) res: any // 🍪 Inject the Response object
+  ) {
+    try {
+    const result = await this.authService.login(loginDto.email, loginDto.password);
+
+    res.cookie('access_token', result.access_token, {
+      httpOnly: true, // 🛡️ Security: JS cannot steal this token
+      secure: false,  // Set to true in production with HTTPS
+      sameSite: 'lax',
+      maxAge: 3600000, // 1 hour in milliseconds
+    });
+
+    return res.redirect('/admin/dashboard'); 
+    
+  } catch (err) {
+    return res.render('admin/login', { error: 'Invalid Credentials' });
   }
+  }  
 
   @Post('register')
   //example request body: { "email": "test@example.com", "password": "password123", "display_name": "Test User" }
