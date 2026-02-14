@@ -1,11 +1,9 @@
-# Quiz App - React & NestJS
+# Q Ken A - React & NestJS
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![NestJS](https://img.shields.io/badge/NestJS-10.x-red.svg)
-![React](https://img.shields.io/badge/React-18.x-blue.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)
+> Aplikasi mengerjakan quiz dengan React untuk frontend dan NestJS untuk backend (database postgres dan admin panel untuk handlebars).
 
-> A full-stack quiz application with real-time session management, built with React and NestJS.
+informasi lengkap backend nestJS: ![more](./backend.md)
+informasi lengkap admin panel fullstack typescript: [more](./fullstack.md) 
 
 ## 📋 Table of Contents
 
@@ -423,7 +421,7 @@ sequenceDiagram
     B-->>F: Score & results
 ```
 
-**📚 Untuk dokumentasi API lengkap, import [Postman Collection](./postman_collection.json)**
+**📚 Untuk dokumentasi API lengkap, import [Postman Collection](./backend/test/Quiz Sessions API.postman_collection.json)**
 
 ---
 
@@ -576,7 +574,7 @@ test/
 ```
 HASIL TESTING LULUS SEBAGAI BERIKUT
 ```
-[e2e tests](public\e2e-tests.png)
+![e2e tests](./public/e2e-tests.png)
 ```
 
 
@@ -585,7 +583,7 @@ HASIL TESTING LULUS SEBAGAI BERIKUT
 Dilakukan end-to-end testing menggunakan Postman sebagai berikut!
 
 ```
-[postman]public\postman.png
+![postman](./public/postman.png)
 ```
 
 Koleksi Postman bisa didapatkan pada [berikut](\backend\test\Quiz Sessions API.postman_collection.json)!
@@ -599,25 +597,25 @@ backend\test\Quiz Sessions API.postman_collection.json
 
 1. **Login Admin Panel**
 ```
-![login admin panel!](public\login.png)
+![login admin panel!](public/login.png)
 ```
 
 2. **Create Quiz**
 ```
-![create quizzes](public\create.png)
+![create quizzes](public/create.png)
 ```
 
 3. **Read Quiz**
 ```
-![show quiz](public\all-quizzess.png)
+![show quiz](public/all-quizzess.png)
 ```
 4. **Edit Quiz**
 ```
-![edit](public\edit.png)
+![edit](public/edit.png)
 ```
 5. **edit success**
 ```
-![edit success!](public\edit-success.png)
+![edit success!](public/edit-success.png)
 ```
 
 ### Test Coverage Areas
@@ -651,9 +649,17 @@ Tool: AWS Architecture Diagram, Cloud Architecture Diagram
 ```
 
 - **Backend:**  Railway
-Railway deployment: [HERE](https://quiz-app-react-nestjs-production.up.railway.app/)
+Railway deployment: ![HERE](https://quiz-app-react-nestjs-production.up.railway.app/)
 - **Frontend:** Vercel
 - **Database:** Supabase
 
 ---
 
+
+
+
+MVC
+
+Model (services)-> berinteraksi dengan database  
+view (hbs ) -> antarmuka
+controller -> routing (typeorm X)
