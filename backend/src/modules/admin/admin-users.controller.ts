@@ -13,7 +13,7 @@ export class UsersAdminController {
     @Roles(Role.Admin)
     @Render('admin/users') // No need for .hbs extension
     async getUsers(@Query() query  ) {
-        const users = await this.userService.findAll();
+        const users = await this.userService.findByQuery(query.search || '');
         return { 
             adminName: 'Kendrick', 
             date: new Date().toLocaleDateString(),

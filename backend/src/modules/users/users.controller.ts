@@ -12,16 +12,16 @@ export class UsersController {
 //useguard
     // @UseGuards(JwtAuthGuard)
     // @UseGuards(AuthGuard('jwt'))
-    @Get()
+    // add param to filter user by email or username 
+    @Get(':query')
     @Roles(Role.Admin)
-    findAll() {
-        return this.usersService.findAll();
+    findAll(@Param('query') query: string) {
+        return this.usersService.findByQuery(query);
     }
     
     @Get(':id')
     findOne(@Param('id') id: string) {
         const parsed = parseInt(id);
-        // if (Number.isNaN(parsed)) throw new BadRequestException('Invalid id');
         return this.usersService.findOne(parsed);
     }
     
@@ -29,7 +29,6 @@ export class UsersController {
     @Roles(Role.Admin)
     @UsePipes(new ValidationPipe())
     async register(@Body() createUserDto: CreateUserDto, @Req() req) {
-        // Hash password before saving!
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
         return this.usersService.create({
             ...createUserDto,

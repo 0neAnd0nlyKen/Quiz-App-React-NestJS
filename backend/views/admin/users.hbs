@@ -3,6 +3,14 @@
     <a href="/admin/users/create" class="btn btn-primary">+ Add User</a>
 </div>
 
+<form method="GET" action="/admin/users">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" name="search" placeholder="Search users..." value="{{query.search}}">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+    </div>
+</form>
+
+
 <table class="table table-striped border">
     <thead class="table-dark">
         <tr>

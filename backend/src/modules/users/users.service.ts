@@ -34,6 +34,17 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
+  async findByQuery(query: string): Promise<User[]> {
+    if (!query || query.trim() === '') {
+      return this.findAll();
+    }
+    // use like operator for partial matches, and search both email and username
+    return this.usersRepository.createQueryBuilder('user')
+      .where('user.email ILIKE :query', { query: `%${query}%` })
+      .orWhere('user.username ILIKE :query', { query: `%${query}%` })
+      .getMany();
+  }
+
   async findOne(id: number): Promise<User | null> {
     return this.usersRepository.findOne({ where: { id } });
   }
