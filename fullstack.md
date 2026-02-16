@@ -23,7 +23,7 @@ Password: password12345
 
 Dua tabel utama memiliki relasi one to many:
 - **Quiz** (one) ke **Questions** (many): Satu kuis dapat memiliki banyak pertanyaan.
-- **Users** memiliki relasi many-to-many dengan **Quiz** dan **Questions**, tetapi fokus pada one-to-many antara Quiz dan Questions.
+- **Users** memiliki relasi many-to-many dengan **Quiz** dan **Questions**. Tetapi disusun menjadi 2 tabel yaitu **Answers** yang memiliki relasi many-to-one dengan users dan questions, serta **Sessions** yang memiliki relasi many-to-one dengan users dan questions.
 
 ERD menunjukkan relasi ini dengan foreign key.
 

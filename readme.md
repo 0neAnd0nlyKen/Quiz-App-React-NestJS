@@ -1,11 +1,14 @@
 # Q Ken A - React & NestJS
 
-> Aplikasi mengerjakan quiz dengan React untuk frontend dan NestJS untuk backend (database postgres dan admin panel untuk handlebars).
+# Aplikasi mengerjakan quiz dengan React untuk frontend dan NestJS untuk backend (database postgres dan admin panel untuk handlebars).
 
-informasi lengkap backend nestJS: ![more](./backend.md)
-informasi lengkap admin panel fullstack typescript: [more](./fullstack.md) 
+> informasi lengkap backend nestJS: 
+ [more](./backend.md)
 
-## 📋 Table of Contents
+> informasi lengkap fullstack admin panel typescript: 
+ [more](./fullstack.md) 
+
+## Table of Contents
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -26,12 +29,12 @@ informasi lengkap admin panel fullstack typescript: [more](./fullstack.md)
 
 ---
 
-## 🎯 Overview
+# Overview
 
 Q KEN A adalah aplikasi kuis interaktif yang memungkinkan admin membuat kuis, pertanyaan, dan mengelola sesi kuis, sementara user dapat mengikuti kuis dengan sistem tracking waktu dan scoring otomatis.
 
 
-## 🏗️ Architecture
+## Architecture
 
 **🎨 DIAGRAM: System Architecture Diagram**
 ```
@@ -81,7 +84,7 @@ Tool: PlantUML Component Diagram
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Backend
 - **Framework:** NestJS 10.x
@@ -109,7 +112,7 @@ Tool: PlantUML Component Diagram
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -204,7 +207,7 @@ The application will be available at:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 quiz-app/
@@ -420,19 +423,19 @@ sequenceDiagram
     DB-->>B: Final results
     B-->>F: Score & results
 ```
+## API Documentation
 
-**📚 Untuk dokumentasi API lengkap, import [Postman Collection](./backend/test/Quiz Sessions API.postman_collection.json)**
+📚 Untuk dokumentasi API lengkap, import [berikut](/backend/test/Quiz%20Sessions%20API.postman_collection.json)
+```
+/backend/test/Quiz Sessions API.postman_collection.json
+```
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 **🎨 DIAGRAM: Entity Relationship Diagram (ERD)**
-```
-Letakkan di sini: Comprehensive ERD showing all tables and relationships
-Tool: dbdiagram.io, MySQL Workbench, atau Draw.io
-```
-
+![ERD](public/Quiz-App-Diagram.jpg)
 ### Tables
 
 #### users
@@ -504,19 +507,13 @@ CREATE TABLE answers (
 - One Session has Many Answers (1:N)
 - One Question has Many Answers (1:N)
 
-**🎨 ERD Visual:**
-```
-[ERD](public\Quiz-App-Diagram.jpg)
-```
 
 ---
 
-## 🔐 Authentication & Authorization
+## Authentication & Authorization
 
 **🎨 DIAGRAM: Authentication Flow Diagram**
-```
-
-```
+![auth-flow](public/)
 
 ### JWT Implementation
 
@@ -550,7 +547,7 @@ The application uses JWT (JSON Web Tokens) for stateless authentication:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 
@@ -573,50 +570,48 @@ test/
 └── e2e-setup.ts                   # Test configuration
 ```
 HASIL TESTING LULUS SEBAGAI BERIKUT
-```
+
 ![e2e tests](./public/e2e-tests.png)
-```
+
 
 
 ### Postman
 
 Dilakukan end-to-end testing menggunakan Postman sebagai berikut!
 
-```
+
 ![postman](./public/postman.png)
-```
 
-Koleksi Postman bisa didapatkan pada [berikut](\backend\test\Quiz Sessions API.postman_collection.json)!
 
-```
-backend\test\Quiz Sessions API.postman_collection.json
-```
+Koleksi Postman bisa didapatkan pada [berikut](/backend/test/Quiz Sessions API.postman_collection.json)!
+
+(backend/test/Quiz Sessions API.postman_collection.json)
 
 
 ### Admin Panel 
 
 1. **Login Admin Panel**
-```
+
 ![login admin panel!](public/login.png)
-```
+
 
 2. **Create Quiz**
-```
+
 ![create quizzes](public/create.png)
-```
+
 
 3. **Read Quiz**
-```
+
 ![show quiz](public/all-quizzess.png)
-```
-4. **Edit Quiz**
-```
+
+4. **Update Quiz**
+
 ![edit](public/edit.png)
-```
-5. **edit success**
-```
+
+5. **Delete success**
+
 ![edit success!](public/edit-success.png)
-```
+
 
 ### Test Coverage Areas
 
@@ -636,7 +631,7 @@ Tool: Chart/Graph showing percentage coverage
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 **🎨 DIAGRAM: Deployment Architecture Diagram**
 ```
@@ -646,14 +641,12 @@ Tool: AWS Architecture Diagram, Cloud Architecture Diagram
 
 ### Production Deployment
 
-```
 
 - **Backend:**  Railway
-Railway deployment: ![HERE](https://quiz-app-react-nestjs-production.up.railway.app/)
+Railway deployment: [HERE](https://quiz-app-react-nestjs-production.up.railway.app/)
 - **Frontend:** Vercel
 - **Database:** Supabase
 
----
 
 
 
